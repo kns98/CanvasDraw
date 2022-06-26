@@ -25,7 +25,7 @@ namespace CanvasDraw
 
         }
 
-        private Stack <(Pen,Rectangle)> objects = new Stack<(Pen,Rectangle)>();
+        private Stack<(Pen, Rectangle)> objects = new Stack<(Pen, Rectangle)>();
 
         private Rectangle RcDraw = new Rectangle();
         private float PenWidth = 5;
@@ -49,6 +49,7 @@ namespace CanvasDraw
                 var tmp_ex = e.X;
                 var tmp_ey = e.Y;
 
+                //swap variables
                 (tmp_ex, RcDraw.X) = (RcDraw.X, tmp_ex);
                 (tmp_ey, RcDraw.Y) = (RcDraw.Y, tmp_ey);
 
@@ -61,8 +62,8 @@ namespace CanvasDraw
                 RcDraw.Height = Math.Abs(e.Y - RcDraw.Y);
             }
 
-            label2.Text = "Up : " + DateTime.Now.ToString() + " " + e.X + 
-                " " + e.Y + "["+ RcDraw.Width + " " + RcDraw.Height + "]";
+            label2.Text = "Up : " + DateTime.Now.ToString() + " " + e.X +
+                " " + e.Y + "[" + RcDraw.Width + " " + RcDraw.Height + "]";
             this.Invalidate(new Region(RcDraw));
         }
 
@@ -71,10 +72,10 @@ namespace CanvasDraw
             //Keep a stash of objects for saving
             Pen pen = new Pen(Color.Blue, PenWidth);
             pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-            Rectangle rect = new Rectangle(new Point(RcDraw.X,RcDraw.Y), new Size(RcDraw.Width,RcDraw.Height));
+            Rectangle rect = new Rectangle(new Point(RcDraw.X, RcDraw.Y), new Size(RcDraw.Width, RcDraw.Height));
             objects.Push((pen, rect));
 
-            e.Graphics.DrawRectangle(pen,rect);
+            e.Graphics.DrawRectangle(pen, rect);
         }
 
 
@@ -93,14 +94,14 @@ namespace CanvasDraw
                 var imageOutputStream = saveFileDialog1.OpenFile();
                 using (Image bmp = new Bitmap(ctr.Width, ctr.Height))
                 {
-                    
+
                     var gg = Graphics.FromImage(bmp);
 
                     foreach (var _obj in this.objects)
                     {
-                        gg.DrawRectangle(_obj.Item1,_obj.Item2);
+                        gg.DrawRectangle(_obj.Item1, _obj.Item2);
                     }
-                    
+
                     bmp.Save(imageOutputStream, System.Drawing.Imaging.ImageFormat.Bmp);
                 }
             }
@@ -108,12 +109,17 @@ namespace CanvasDraw
             {
                 MessageBox.Show(e.Message);
             }
-            
+
         }
 
         private void saveToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             SaveControlImage();
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Click down, hold, click up to draw a rectangle.", "Canvas Draw");
         }
     }
 }
