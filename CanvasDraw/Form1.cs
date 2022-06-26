@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace CanvasDraw
 {
+
     public partial class Form1 : Form
     {
         public Form1()
@@ -33,8 +34,23 @@ namespace CanvasDraw
 
         private void Form1_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            RcDraw.Width = Math.Abs(e.X - RcDraw.X);
-            RcDraw.Height = Math.Abs(e.Y - RcDraw.Y);
+            if (e.X < RcDraw.X || e.Y < RcDraw.Y)
+            {
+                var tmp_ex = e.X;
+                var tmp_ey = e.Y;
+
+                (tmp_ex, RcDraw.X) = (RcDraw.X, tmp_ex);
+                (tmp_ey, RcDraw.Y) = (RcDraw.Y, tmp_ey);
+
+                RcDraw.Width = Math.Abs(tmp_ex - RcDraw.X);
+                RcDraw.Height = Math.Abs(tmp_ey - RcDraw.Y);
+            }
+            else
+            {
+                RcDraw.Width = Math.Abs(e.X - RcDraw.X);
+                RcDraw.Height = Math.Abs(e.Y - RcDraw.Y);
+            }
+
             label2.Text = "Up : " + DateTime.Now.ToString() + " " + e.X + 
                 " " + e.Y + "["+ RcDraw.Width + " " + RcDraw.Height + "]";
             this.Invalidate(new Region(RcDraw));
@@ -50,6 +66,28 @@ namespace CanvasDraw
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void SaveControlImage(Control ctr)
+        {
+            try
+            {
+                var imagePath = @"C:\Image.png";
+                Image bmp = new Bitmap(ctr.Width, ctr.Height);
+                var gg = Graphics.FromImage(bmp);
+                var rect = ctr.RectangleToScreen(ctr.ClientRectangle);
+                gg.CopyFromScreen(rect.Location, Point.Empty, ctr.Size);
+                bmp.Save(imagePath);
+            }
+            catch (Exception)
+            {
+                //
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //SaveControlImage();
         }
     }
 }
